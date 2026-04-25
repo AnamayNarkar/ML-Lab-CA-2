@@ -1,4 +1,4 @@
-# ============================================================
+# ------------------------------------------------------------
 #  STUDENT AT-RISK PREDICTION SYSTEM
 #  Problem Statement: Predict academic performance to identify
 #  at-risk students early (before they drop out).
@@ -10,7 +10,7 @@
 #    (2021). Predict Students' Dropout and Academic Success
 #    [Dataset]. UCI Machine Learning Repository.
 #    https://doi.org/10.24432/C5MC89
-# ============================================================
+# ------------------------------------------------------------
 
 import pandas as pd
 import numpy as np
@@ -31,16 +31,16 @@ from sklearn.metrics import (
 )
 from matplotlib.patches import Patch
 
-print("=" * 62)
-print("  STUDENT AT-RISK PREDICTION — UCI Real Dataset")
+print("-" * 62)
+print("  STUDENT AT-RISK PREDICTION - UCI Real Dataset")
 print("  Citation: Realinho et al. (2021), UCI ML Repository")
 print("  DOI: https://doi.org/10.24432/C5MC89")
-print("=" * 62)
+print("-" * 62)
 print()
 
-# ============================================================
+# ------------------------------------------------------------
 # STEP 1: LOAD AND PREPARE DATA
-# ============================================================
+# ------------------------------------------------------------
 df = pd.read_csv('uci_data.csv', sep=';', encoding='utf-8-sig')
 df.columns = [c.strip() for c in df.columns]   # remove any stray \t from col names
 
@@ -56,9 +56,9 @@ print(f"At-Risk (1)     : {(y == 1).sum()}  ({(y == 1).mean()*100:.1f}%)")
 print(f"Not At-Risk (0) : {(y == 0).sum()}  ({(y == 0).mean()*100:.1f}%)")
 print()
 
-# ============================================================
+# ------------------------------------------------------------
 # STEP 2: TRAIN/TEST SPLIT + SCALING
-# ============================================================
+# ------------------------------------------------------------
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
@@ -71,11 +71,11 @@ print(f"Train size : {X_train_sc.shape[0]} students")
 print(f"Test size  : {X_test_sc.shape[0]} students")
 print()
 
-# ============================================================
-# STEP 3: EDA VISUALISATIONS → student_eda.png
-# ============================================================
+# ------------------------------------------------------------
+# STEP 3: EDA VISUALISATIONS -> student_eda.png
+# ------------------------------------------------------------
 fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-fig.suptitle('Student Academic Performance — Exploratory Analysis\n'
+fig.suptitle('Student Academic Performance - Exploratory Analysis\n'
              'UCI Dataset (Realinho et al., 2021)', fontsize=14, fontweight='bold')
 
 # [0,0] At-Risk distribution
@@ -90,6 +90,7 @@ for i, v in enumerate(counts):
 # [0,1] 1st sem approved units by class
 col_approved = 'Curricular units 1st sem (approved)'
 for label, color, name in [(0, '#2ecc71', 'Not At Risk'), (1, '#e74c3c', 'At Risk')]:
+
     axes[0, 1].hist(df[df['at_risk'] == label][col_approved],
                     bins=15, alpha=0.6, color=color, label=name, edgecolor='white')
 axes[0, 1].set_title('1st Sem Units Approved (by Risk)')
@@ -121,9 +122,9 @@ plt.savefig('student_eda.png', dpi=150, bbox_inches='tight')
 plt.close()
 print("Saved: student_eda.png")
 
-# ============================================================
+# ------------------------------------------------------------
 # STEP 4: TRAIN 3 MODELS  (class_weight='balanced' on all)
-# ============================================================
+# ------------------------------------------------------------
 models = {
     'Logistic Regression': LogisticRegression(
         max_iter=1000, class_weight='balanced', random_state=42
@@ -136,9 +137,9 @@ models = {
     ),
 }
 
-# ============================================================
+# ------------------------------------------------------------
 # STEP 5: EVALUATE ALL MODELS — primary metric: F1 for class 1
-# ============================================================
+# ------------------------------------------------------------
 results = {}
 print(f"\n{'Model':<22} {'Acc':>6}  {'Prec(1)':>9}  {'Rec(1)':>8}  {'F1(1)':>7}")
 print("=" * 60)
@@ -178,9 +179,9 @@ print("\nFull Classification Report:")
 print(classification_report(y_test, y_pred,
       target_names=['Not At Risk', 'At Risk'], zero_division=0))
 
-# ============================================================
+# ------------------------------------------------------------
 # STEP 6: CONFUSION MATRIX → confusion_matrix.png
-# ============================================================
+# ------------------------------------------------------------
 fig, ax = plt.subplots(figsize=(6, 5))
 cm = confusion_matrix(y_test, y_pred)
 ConfusionMatrixDisplay(cm, display_labels=['Not At Risk', 'At Risk']).plot(
@@ -192,9 +193,9 @@ plt.savefig('confusion_matrix.png', dpi=150, bbox_inches='tight')
 plt.close()
 print("Saved: confusion_matrix.png")
 
-# ============================================================
+# ------------------------------------------------------------
 # STEP 7: FEATURE IMPORTANCE → feature_importance.png (top 20)
-# ============================================================
+# ------------------------------------------------------------
 fig, ax = plt.subplots(figsize=(10, 8))
 
 if best_name == 'Logistic Regression':
@@ -218,10 +219,10 @@ plt.savefig('feature_importance.png', dpi=150, bbox_inches='tight')
 plt.close()
 print("Saved: feature_importance.png")
 
-# ============================================================
+# ------------------------------------------------------------
 # STEP 8: MODEL COMPARISON → model_comparison.png
 # (Recall and F1, not raw accuracy — avoids misleading imbalance effect)
-# ============================================================
+# ------------------------------------------------------------
 model_names = list(results.keys())
 recalls = [results[n]['recall'] for n in model_names]
 f1s     = [results[n]['f1']     for n in model_names]
@@ -249,9 +250,9 @@ plt.savefig('model_comparison.png', dpi=150, bbox_inches='tight')
 plt.close()
 print("Saved: model_comparison.png")
 
-# ============================================================
+# ------------------------------------------------------------
 # STEP 9: SAVE ARTIFACTS
-# ============================================================
+# ------------------------------------------------------------
 train_medians = X_train.median().to_dict()
 
 joblib.dump(best_model,   'best_model.pkl')
@@ -265,9 +266,9 @@ print("  scaler.pkl          — fitted StandardScaler")
 print("  feature_names.pkl   — list of 35 feature column names")
 print("  feature_medians.pkl — training-set medians for all 35 features")
 
-# ============================================================
+# ------------------------------------------------------------
 # STEP 10: EXAMPLE PREDICTION — struggling student profile
-# ============================================================
+# ------------------------------------------------------------
 print("\n" + "=" * 55)
 print("  EXAMPLE PREDICTION — Struggling Student Profile")
 print("=" * 55)

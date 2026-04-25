@@ -14,7 +14,7 @@ import joblib
 
 st.set_page_config(
     page_title="Student At-Risk Predictor",
-    page_icon="🎓",
+    page_icon="app",
     layout="wide",
 )
 
@@ -35,7 +35,7 @@ DATASET_BASELINE = 32.1   # % dropout rate in UCI dataset
 # ============================================================
 # HEADER
 # ============================================================
-st.title("🎓 Student At-Risk Early Warning System")
+st.title("Student At-Risk Early Warning System")
 st.markdown("""
 **Problem Statement:** Predict academic performance to identify at-risk students early —
 before they drop out — so educators can intervene in time.
